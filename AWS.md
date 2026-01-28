@@ -141,7 +141,7 @@ From previous task, look for field containing `security`.
 ## AWS17
 > Before launching the instance, the attacker created a key pair for SSH access and attached to EC2. What is the name of the key pair created?
 
-Back at the task [AWS14](##aws14), we see the field `keyName`.
+Back at the task [AWS14](#aws14), we see the field `keyName`.
 
 > Flag: `testing_web_key`
 
