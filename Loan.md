@@ -74,7 +74,7 @@ To answer this question, we must look at the network traffic in provided pcap fi
 
 ![](img/Loan/20260130143310.png)
 
-New windows will open where we will see full HTTP session communication between source `192.168.11.49` and destination `192.30.253.137` when attacker downloaded `memory_test.sh` where we see our answer:
+New window will open where we will see full HTTP session communication between source `192.168.11.49` and destination `192.30.253.137` when attacker downloaded `memory_test.sh` where we see our answer:
 
 ![](img/Loan/20260130143612.png)
 
@@ -91,7 +91,7 @@ We see answer for this at the previous question.
 ## Loan16
 > Under which user account was the file executed?
 
-From the previous questions, we see that user downloaded `memory_test.sh` and saved it as `/tmp/r` file. We can search for `/tmp/r` in the `auditbeat-*` and look at the `user.name` field/
+From the previous questions, we see that user downloaded `memory_test.sh` and saved it as `/tmp/r` file. We can search for `/tmp/r` in the `auditbeat-*` and look at the `user.name` field.
 
 ![](img/Loan/20260130144702.png)
 
