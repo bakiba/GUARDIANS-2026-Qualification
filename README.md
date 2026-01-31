@@ -39,13 +39,13 @@ There is also Arkime server doing packet capture of "some" interfaces. You can d
 
 * [HR](HR.md) - First scenario. 
 
-* [AWS](AWS.md) - TBD.
+* [AWS](AWS.md) - In the AWS challenge, participants analyzed a compromised Coolbank AWS account where stolen credentials were used to launch an EC2 instance for cryptocurrency mining. The investigation focused on correlating GuardDuty, CloudTrail, CloudWatch, and S3 logs to identify unauthorized resource creation, cryptominer activity, and illicit access to sensitive S3 data.
 
 * [Ext](Ext.md) - TBD.
 
 * [Loan](Loan.md) - TBD.
 
-* [DC](DC.md) - TBD.
+* [DC](DC.md) - In the DC challenge, participants investigated a compromise of Coolbank domain environment by analyzing SIEM logs and system events to reconstruct the attacker’s activity. The task focused on identifying initial access, deployed tools, privilege escalation, persistence, and ransomware execution, while mapping observed behavior to known attack techniques.
 
 * [DMZ](DMZ.md) - TBD.
 
