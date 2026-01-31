@@ -3,82 +3,138 @@
 ## DC01
 > In Kibana, under Alerts, we observed multiple alerts from the host adc2ofc. What is the name of the last alert received within the Guardians time window on the adc2ofc?
 
-> Flag: ``
+Looking at the Kiana Security->Alerts dashboard and filter for hostname `adc2ofc`, we see the last alert received:
+
+![](img/DC/20260131174952.png)
+
+> Flag: `Multiple Alerts in Different ATT&CK Tactics on a Single Host`
 
 ## DC02
 > For that alert, if we select Investigate in timeline within the correct time window, multiple alerts appear. What is the name of the last of these alerts?
 
-> Flag: ``
+ When clicking investigate in the timeline, no alerts were shown because timeframe was somehow messed-up... when selecting `Guardians` timeframe, the alerts were shown.
+
+ ![](img/DC/20260131175146.png)
+
+> Flag: `Process Execution from an Unusual Directory`
 
 ## DC03
 > What was the process name detected by this alert?
 
-> Flag: ``
+Visible in previous task.
+
+> Flag: `teafortwo.exe`
 
 ## DC04
 > What is the full path to the executable file of this process?
 
-> Flag: ``
+By toggling the dialog window with details for the selected document, we can search for `process.command_line` field that will give us answer:
+
+![](img/DC/20260131175542.png)
+
+> Flag: `C:\Users\Public\Documents\teafortwo.exe`
 
 ## DC05
 > What is the MD5 hash of this .exe file?
 
-> Flag: ``
+For this we need to switch to Discover dashbaord and open `winlogbeat-*` Data view and search for `teafortwo.exe` and look at the `file.hash.md5` field:
+
+![](img/DC/20260131175844.png)
+
+> Flag: `ae454079c93a7a1ce276756b9d62d196`
 
 ## DC06
 > By analyzing this file in more detail, we discover it is malware. What type of malware is it?
 
-> Flag: ``
+For this type of information we turn to [VirusTotal](https://www.virustotal.com/) where we can enter the `md5` hash from previous task to search for information on mentioned malware. VirusTotal identified this sample as `ransomware.akira/filecryptor`
+
+![](img/DC/20260131180205.png)
+
+> Flag: `ransomware`
 
 ## DC07
 > Which ransomware family does this sample belong to?
 
-> Flag: ``
+Visible in previous task.
+
+> Flag: `akira`
 
 ## DC08
 > When was the file first submitted to VirusTotal? Format: `YYYY-MM-DD HH:MM:SS UTC`.
 
-> Flag: ``
+Clicking on the `Detils` tab on VirusTotal page, we see History details:
+
+![](img/DC/20260131180357.png)
+
+> Flag: `2025-08-26 09:05:20 UTC`
 
 ## DC09
 > Ransomware typically creates a ransom note. What is the filename of the ransom note in our case?
 
-> Flag: ``
+Search for `teafortwo.exe` in the `winlogbeat-*` Data view, display the `file.path` field and look at the `File created...` messages:
+
+![](img/DC/20260131180832.png)
+
+> Flag: `akira_readme.txt`
 
 ## DC10
 > Under which user account was the ransomware executed?
 
-> Flag: ``
+Visible in previous task.
+
+> Flag: `administratr`
 
 ## DC11
 > What was the originating process for the ransomware file creation event?
 
-> Flag: ``
+From the previous search, we look at the oldest event and see that `AnyDesk.exe` created the `teafortwo.exe`:
+
+![](img/DC/20260131181618.png)
+
+> Flag: `AnyDesk.exe`
 
 ## DC12
 > What other file (filename) was created by the same process?
 
-> Flag: ``
+Search for `process.name: "AnyDesk.exe"`, apply filter for `event.action:File created (rule: FileCreate)` and look at the created files:
+
+![](img/DC/20260131182009.png)
+
+> Flag: `backupTool.exe`
 
 ## DC13
 > What is the sha256 hash of that file?
 
-> Flag: ``
+Search for `backupTool.exe` and add the `file.hash.sha256` field to the table view:
+
+![](img/DC/20260131182342.png)
+
+> Flag: `c9a38fa7b619a1bc814fcf381a940245dfa8d24ae51e7ec22f9461eae288ede3`
 
 ## DC14
 > What is the file path where that file was saved?
 
-> Flag: ``
+Visible in previous task.
+
+> Flag: `C:\Users\Public\Downloads\backupTool.exe`
 
 ## DC15
 > After the file was created, it initiated a network connection. What was the destination IP address and port? (Format: IP:PORT)
 
-> Flag: ``
+Same search as previous, just add `desination.ip` and `destination.port` fields to the table view:
+
+![](img/DC/20260131182754.png)
+
+> Flag: `176.9.13.248:443`
 
 ## DC16
 > An alert was also associated with this file. What is the name of the framework that was used?
 
-> Flag: ``
+In the Kibana Security->Alerts dashboard, we can search for the destination IP `176.9.13.248` and we'll find single alert related to this. Note that searching for alerts on `ADC2ofc` will not help finding the answer as the alert is associated with the perimeter firewall `WGM-SK-FW002`.
+
+![](img/DC/20260131183033.png)
+
+> Flag: `havoc`
 
 ## DC17
 > Havoc is a C2 framework, as shown in the alert. Who is the primary author of this post-exploitation command-and-control framework?
