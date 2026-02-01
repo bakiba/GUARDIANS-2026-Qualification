@@ -1,73 +1,111 @@
 # EXT
 
 ## EXT01
-> Analysts in your organization noticed another user's suspicious logon from foreign country. After initial analysis you realize that the leak may be much worse then it seems. While analyzing emails you notice conversation about new browser extension that users started installing. What is email of the user who notified colleagues of new extension?
+> Analysts in your organization noticed another user's suspicious logon from foreign country. After initial analysis you realize that the leak may be much worse than it seems. While analyzing emails you notice conversation about new browser extension that users started installing. What is email of the user who notified colleagues of new extension?
 
-> Flag: ``
+The first step was to show emails in Kibana Discover dashboard, in `o365-*` Data view and show subjects. After looking through them we found emails with `Našiel som skvelé rozšírenie na zvýrazňovanie textu` which sounded suspicious. We also added fields `event.action` and `o365.audit.UserId` to better understand action and who performed it.
+
+![](img/EXT/20260201201917.png)
+
+> Flag: `miroslav.jakabovic@coolbank.eu`
 
 ## EXT02
 > You take a closer look at the emails and write down some things you have noticed as they might be important down the road. What is the subject of email chain in which employees discuss this extension?
 
-> Flag: ``
+Visible in previous task.
+
+> Flag: `Našiel som skvelé rozšírenie na zvýrazňovanie textu`
 
 ## EXT03
 > When was the first email regarding extension sent? 
 Use ISO8601 format e.g.: 2026-01-17T22:49:53
 
-> Flag: ``
+Since there were multiple timestamps in the event, we consulted LLM to see if field `o365.audit.CreationTime` was the time when email was sent. Note that `@timestamp` shown in the screenshot is in CET timezone which is UTC+1.
+
+> Flag: `2026-01-15T21:56:26`
 
 ## EXT04
 > What are the emails of users that replied in conversation with Miroslav Jakabovic about extension?
-Sort answers in alphabetical order by name and separate values by comma
+Sort answers in alphabetical order by name and separate values by comma.
 
-> Flag: ``
+Found the list of users that replied in the thread with filter `"Re: Našiel som skvelé rozšírenie na zvýrazňovanie textu" and event.action:"Send"`:
+
+![](img/EXT/20260201202927.png)
+
+> Flag: `david.jalovec@coolbank.eu,miloslav.dubnicka@coolbank.eu,zdenka.jakubcek@coolbank.eu`
 
 ## EXT05
 > Several users visited web mentioned in the email and downloaded the extension. Your thoughts lead you to network traffic and file streams. What is IP of the server that extension was downloaded from?
 
-> Flag: ``
+Browser extensions are usually `.crx` or `.zip` files. Searching for `.crx` returned single result which turned to be dead end, however after searching for `*.zip` in the `All logs` Data view, three documents are found and all downloaded `extension.zip` from `54.175.155.238`:
+
+![](img/EXT/20260201203332.png)
+
+> Flag: `54.175.155.238`
 
 ## EXT06
 > What is the file extension of the file that was downloaded from the server?
 
-> Flag: ``
+Visible from previous task.
+
+> Flag: `zip`
 
 ## EXT07
 > What are IPs of devices that downloaded extension from this server?
 Sort IP addresses in ascending order and separate values by comma
 
-> Flag: ``
+Visible from previous task.
+
+> Flag: `192.168.12.4,192.168.12.6,192.168.12.8`
 
 ## EXT08
 > You have noticed multiple workstations that download the extension. What are the names of the computers that downloaded the extension?
 Sort hostnames in alphabetical order and separate values by comma
 
-> Flag: ``
+To find the hostnames for the IPs that downloaded extension, we look at `winlogbeat-*` Data view and search for `host.ip:(192.168.12.4 OR 192.168.12.6 OR 192.168.12.8)` and show `agent.hostname` field. 
+Or we can just look at the Environment picture.
+
+
+> Flag: `officeWin1,officeWin3,officeWin5`
 
 ## EXT09
 > Which user downloaded extension as first?
 
-> Flag: ``
+In the `winlogbeat-*` search for `host.ip:(192.168.12.4 OR 192.168.12.6 OR 192.168.12.8) and file.name:"extension.zip"` and show the `related.user` field. Answer is the earliest timestamp:
+
+![](img/EXT/20260201204015.png)
+
+> Flag: `zdenka.jakubcek`
 
 ## EXT10
 > Which user downloaded extension as second?
 
-> Flag: ``
+Visible from previous task.
+
+> Flag: `miloslav.dubnicka`
 
 ## EXT11
 > Which user downloaded extension as third?
 
-> Flag: ``
+Visible from previous task.
+
+> Flag: `david.jalovec`
 
 ## EXT12
 > Closer look at the downloaded files reveals that they are not the same. What is the sha1 hash of the extension file downloaded as first?
 
-> Flag: ``
+From the previous search, just add `file.hash.sha1` to the table.
+
+![](img/EXT/20260201213645.png)
+
+> Flag: `312aa04128b0c4574b8f53b5ee31d47d83d2aa4b`
 
 ## EXT13
 > What is the sha1 hash of the different extension file?
 
-> Flag: ``
+Visible from previous task.
+
+> Flag: `0b7fc40a15b5f471261dd76a16c6acd20e055373`
 
 ## EXT14
 > This is very interesting, two different versions of the same extension downloaded within 30 minutes. Let's check the difference. The second one seems to have some nasty functionality and based on the actual code, wants to communicate with some IP addresses. What is the IP address in the source code of the updated extension?
