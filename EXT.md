@@ -110,27 +110,47 @@ Visible from previous task.
 ## EXT14
 > This is very interesting, two different versions of the same extension downloaded within 30 minutes. Let's check the difference. The second one seems to have some nasty functionality and based on the actual code, wants to communicate with some IP addresses. What is the IP address in the source code of the updated extension?
 
-> Flag: ``
+To obtain the source code of the extension, we need to extract ZIP file from PCAP file provided in the Environment section. We opened pcap file in Wireshark and go to File->Export Objects-> HTTP. One the Wireshark lists all HTTP objects, we select `application/zip` from `Content type` and see three objects. Since we know that two are identical, we'll download third one:
+
+![](img/EXT/20260202104521.png)
+
+Just to be sure we downloaded the correct zip file, we compared calculated SHA1 to make sure we have correct files. After opening the zip file and investigating the source code, we found IP address mentioned in one of the .js files:
+
+![](img/EXT/20260202104656.png)
+
+> Flag: `192.168.12.8`
 
 ## EXT15
 > Internal IP address? This doesn't make sense. What is the hostname of the machine with this IP address?
 
-> Flag: ``
+Filtered `winlogbeat-*` for `host.ip: 192.168.12.8` and looked at `host.hostname` of the log events.
+
+> Flag: `officewin5`
 
 ## EXT16
 > Which user does this workstation belong to?
 
-> Flag: ``
+In the Field statistics view for `related.user` for the above `host.ip` filter, we looked which users where in the event logs, and almost half messages had this value.
+
+![](img/EXT/20260202105447.png)
+
+> Flag: `miloslav.dubnicka`
 
 ## EXT17
 > Which workstation were credentials extracted from?
 
-> Flag: ``
+From the analysis of the source code, we know that extension sending data to `http://192.168.12.8:3000` so, in `winlogbeat-*` we search for `destination.ip:"192.168.12.8" and destination.port:"3000"` and look which `source.ip` was connecting to this destination. Only one `source.ip: 192.168.12.4` which belongs to `officeWin1`.
+
+![](img/EXT/20260202110141.png)
+
+> Flag: `officeWin1`
 
 ## EXT18
 > Which windows process was used to install and launch JS runtime environment later utilized during data collection?
 
-> Flag: ``
+
+
+> Flag: `cmd.exe`
 
 ## EXT19
 > Which JS runtime environment did user utilize to launch server and collect data from other workstations?

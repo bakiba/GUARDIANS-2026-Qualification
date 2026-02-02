@@ -37,7 +37,7 @@ There is also Arkime server doing packet capture of "some" interfaces. You can d
 
 ## Challenges
 
-* [HR](HR.md) - First scenario. 
+* [HR](HR.md) - In the HR challenge, participants investigated suspicious Entra ID sign-in alerts involving a corporate user account. The scenario required correlating SIEM, Azure AD, and O365 logs to determine whether the activity was benign or malicious, analyze authentication flows, and identify consent abuse by third-party applications. The investigation ultimately led to uncovering credential theft via an infostealer, highlighting identity-centric attack paths and post-compromise access techniques. 
 
 * [AWS](AWS.md) - In the AWS challenge, participants analyzed a compromised Coolbank AWS account where stolen credentials were used to launch an EC2 instance for cryptocurrency mining. The investigation focused on correlating GuardDuty, CloudTrail, CloudWatch, and S3 logs to identify unauthorized resource creation, cryptominer activity, and illicit access to sensitive S3 data.
 
@@ -45,7 +45,7 @@ There is also Arkime server doing packet capture of "some" interfaces. You can d
 
 * [Loan](Loan.md) - TBD.
 
-* [DC](DC.md) - In the DC challenge, participants investigated a compromise of Coolbank domain environment by analyzing SIEM logs and system events to reconstruct the attacker’s activity. The task focused on identifying initial access, deployed tools, privilege escalation, persistence, and ransomware execution, while mapping observed behavior to known attack techniques.
+* [DC](DC.md) - In the HR challenge, participants analyzed risky Entra ID sign-ins for a corporate user by correlating SIEM, Azure AD, and O365 logs. The investigation focused on understanding authentication behavior, application consent abuse, and ultimately identifying credential theft through an infostealer.
 
 * [DMZ](DMZ.md) - TBD.
 
