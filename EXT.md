@@ -155,95 +155,95 @@ From the analysis of the source code, we know that extension sending data to `ht
 ## EXT19
 > Which JS runtime environment did user utilize to launch server and collect data from other workstations?
 
-> Flag: ``
+> Flag: `Node.js`
 
 ## EXT20
 > What is the full directory path where the suspicious extension's data collection file is located?
 
-> Flag: ``
+> Flag: `C:\Users\miloslav.dubnicka\server\`
 
 ## EXT21
 > What is the PID of the process that executed server file for the first time
 
-> Flag: ``
+> Flag: `7596`
 
 ## EXT22
 > Which package manager was used to install dependencies
 
-> Flag: ``
+> Flag: `npm`
 
 ## EXT23
 > Your colleagues analyzed workstation and discovered file that seems to store stole data. Can you identify whose email password was stolen?
 > [keylogger.txt](img/EXT/keylogger.txt)
 
-> Flag: ``
+> Flag: `david.jalovec@coolbank.eu`
 
 ## EXT24
 > What is the password for the account?
 
-> Flag: ``
+> Flag: `HeroineCrave79`
 
 ## EXT25
 > When was the password submitted? Expected answer is timestamp.
 
-> Flag: ``
+> Flag: `1768516811346`
 
 ## EXT26
 > Once you found out origin of the leak you decided to take a closer look at the foreign login. From which foreign IP did attacker log in?
 
-> Flag: ``
+> Flag: `84.252.113.67`
 
 ## EXT27
 > From which country did the login come from?
 
-> Flag: ``
+> Flag: `Mexico`
 
 ## EXT28
 > Which organization owns server that login came from?
 
-> Flag: ``
+> Flag: `Datacamp Limited`
 
 ## EXT29
 > What app did attacker use to log into the accout?
 
-> Flag: ``
+> Flag: `eM Client`
 
 ## EXT30
 > What user agent was used by attacker during logon?
 
-> Flag: ``
+> Flag: `eMClient/10.4.4209.0`
 
 ## EXT31
 > As you slowly uncover plot of the attack you take a look at activities of the attacker. How many unique rules were created by the attacker?
 
-> Flag: ``
+> Flag: `2`
 
 ## EXT32
 > When was the forward rule created? Use ISO8601 format e.g.: `2026-01-17T22:49:53`.
 
-> Flag: ``
+> Flag: `2026-01-15T23:52:48`
 
 ## EXT33
 > What email account were the incoming emails forwarded to?
 
-> Flag: ``
+> Flag: `miloslav.dubnicka@coolbank.eu`
 
 ## EXT34
 > What keyword is required in subject to execute second rule?
 
-> Flag: ``
+> Flag: `invoice`
 
 ## EXT35
 > To which folder is email moved to when rule is executed?
 
-> Flag: ``
+> Flag: `Archív`
 
 ## EXT36
 > When was the email that was moved to archive accessed by the attacker? Use ISO8601 format e.g.: `2026-01-17T22:49:53`.
 
-> Flag: ``
+> Flag: `2026-01-16T00:26:51`
 
 ## EXT37
 > What subject did the attacker use to bypass this rule and send fake email with similar subject?
 
-> Flag: ``
+> Flag: `Faktura`

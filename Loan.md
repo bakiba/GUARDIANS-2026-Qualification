@@ -3,69 +3,69 @@
 ## Loan01
 > When digging deeper in the available evidence after the incident, we detected unusual web requests on the "loan" server. From which IP address did these requests originate?
 
-> Flag: ``
+> Flag: `176.9.15.89`
 
 ## Loan02
 > Which country does that IP address come from?
 
-> Flag: ``
+> Flag: `Germany`
 
 ## Loan03
 > Which organization does this IP address belong to?
 
-> Flag: ``
+> Flag: `Hetzner Online GmbH`
 
 ## Loan04
 > A scanning attack was performed on the loan server. Which application server (Java web server) is running on the loan host?
 
-> Flag: ``
+> Flag: `tomcat11`
 
 ## Loan05
 > After the requests indicating a scan, we recorded several requests suggesting that content was being stored on the server. How many such requests were created?
  
-> Flag: ``
+> Flag: `3`
 
 ## Loan06
 > What URL path does the first of these requests have?
  
-> Flag: ``
+> Flag: `/zYfIgNzVzK.session`
 
 ## Loan07
 > Right after PUT request, there is GET request, repeated three times. Seems like attemps to exploit some vulnerability. Based on already collected evidence, what could be the CVE of this vulnerability? (format CVE-XXXX-XXXXX)
 
-> Flag: ``
+> Flag: `CVE-2025-24813`
 
 ## Loan08
 > Nice, remote code execution... When was this vulnerability reported to the Tomcat security team? Format: `YYYY-MM-DD`.
 
-> Flag: ``
+> Flag: `2025-01-13`
 
 ## Loan09
 > What is the name of the Apache Tomcat feature where the vulnerability exists? It is also unofficial name of this vulnerability used by security vendors.
 
 
-> Flag: ``
+> Flag: `partial PUT`
 
 ## Loan10
 > Partial PUT typically uses which header in an HTTP request to specify which part of the resource should be modified?
 
-> Flag: ``
+> Flag: `Content-Range`
 
 ## Loan11
 > Were those RCE attempts successful? I am sure you know the answer, even before digging in more logs. A few minutes after the last of those 3 requests, an alert in company SIEM related to the loan machine was triggered. What is the name of the alert?
 
 
-> Flag: ``
+> Flag: `Shell Script`
 
 ## Loan12
 > Between which two public IP addresses did the communication take place in the given alert? (format source,destination)
 
-> Flag: ``
+> Flag: `80.242.40.20,192.30.253.137`
 
 ## Loan13
 > Under what name was the first downloaded file saved to disk? Full path
 
-> Flag: ``
+> Flag: `/tmp/r`
 
 ## Loan14
 > What User-Agent was used in the request related to the download of the file?
