@@ -44,61 +44,95 @@ From the IPinfo search of the IP address, we see the ASN organization is `Dataca
 ## HR06
 > Now check the exact reason why the detection rule fired. What is the risk type detected?
 
+From the alert details in Kibana, we see the risk type is `anonymizedIPAddress`.
+!{}(img/HR/HR06.png)
+
 > Flag: `anonymizedIPAddress`
 
 ## HR07
 > What is the display name of the application Lea logged in to?
+
+Viewing logs with user.name lea.ciger@coolbank.eu and events that have `azure.signinlogs.properties.app_display_name: *` in them, I found the relevant log showing the application display name as `One Outlook Web`.
+
+![](img/HR/HR07.png)
 
 > Flag: `One Outlook Web`
 
 ## HR08
 > Quick recap - Lea logged in to Outlook Web from IP address located in Bangladesh, owned by VPN provider. Could be really suspicious or just forgotten VPN. Let's find out more. Quickest way to find out would be to call her. Unfortunately, she is not picking up her phone. We need to find out ourselves. What is the user_agent.name used for this login?
 
+Looking at the same log as in HR07, we can see the user agent name is `Chrome`.
+
 > Flag: `Chrome`
 
 ## HR09
 > What is the user_agent.name in Lea's other historical logs?
+
+Looking at other historical logs for Lea Ciger, we can see the user agent name is `Edge`.
+
+![](img/HR/HR09.png)
 
 > Flag: `Edge`
 
 ## HR10
 > Hmm, first inconsistency. But it still could be benign. Based on the user's historical login patterns, which IP address represents Lea’s primary home/office location?
 
+From the same query as in HR09, we can see the primary home/office location IP address is `37.58.4.198`
+
+![](img/HR/HR10.png)
+
+
 > Flag: `37.58.4.198`
 
 ## HR11
 > What was the authentication requirement of the login from Bangladesh?
+
+Viewing the log for the login from Bangladesh, we can see the authentication requirement is `singleFactorAuthentication`.
 
 > Flag: `singleFactorAuthentication`
 
 ## HR12
 > What was the authentication method of the login from Bangladesh?
 
+Looking at the same log, we can see the authentication method in the field `azure.signinlogs.properties.authentication_details` is `Password`.
+
 > Flag: `Password`
 
 ## HR13
 > What was the authentication step result?
+
+Again same log and the field `azure.signinlogs.properties.authentication_step_result` shows authentication_step_result_detail as  `Correct password`.
 
 > Flag: `Correct password`
 
 ## HR14
 > After correct password, authentication sequence is (usually) interrupted and user is presented with "Stay signed in?" prompt. How is this process or feature called by Microsoft?
 
+Searched for the name of the feature in Microsoft documentation and found it is called `Keep Me Signed In`.
+
+
 > Flag: `Keep Me Signed In`
 
 ## HR15
 > You can see in the logs if the user was presented the Keep me signed in prompt thanks to one specific error/status code. What code is it?
+
+Viewing details of the log again, we can see the status code is `50140`.
+
+![](img/HR/HR15.png)
 
 > Flag: `50140`
 
 ## HR16
 > If the user clicks No, transient cookie is created. What is the name of the cookie?
 
+Searched for the cookie name.
 
 > Flag: `ESTSAUTH`
 
 ## HR17
 > If the user closes the browser, the ESTSAUTH cookie is destroyed, requiring a fresh login next time. By default, an ESTSAUTH cookie has a validity of up to how many hours?
+
+Again from the Google search.
 
 > Flag: `24`
 
