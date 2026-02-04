@@ -191,7 +191,7 @@ We followed logs after the Node.js installation and noticed process starting the
 ## EXT22
 > Which package manager was used to install dependencies
 
-We found aswer for this in [EXT20](#ext20) task.
+We found answer for this in [EXT20](#ext20) task.
 
 > Flag: `npm`
 
@@ -242,7 +242,7 @@ Parsed line from previous task `david.jalovecShift@coolbank.euiBackspaceShiftHer
 ## EXT25
 > When was the password submitted? Expected answer is timestamp.
 
-For this task, we had to look at the original `keylogger.txt` to find the exact timestamp when passowrd was submitted. Here are last few characters from captured password enter:
+For this task, we had to look at the original `keylogger.txt` to find the exact timestamp when password was submitted. Here are last few characters from captured password enter:
 
 ![](img/EXT/20260203202325.png)
 
@@ -298,9 +298,9 @@ Visible from previous task.
 ## EXT31
 > As you slowly uncover plot of the attack you take a look at activities of the attacker. How many unique rules were created by the attacker?
 
-In the `All logs` Data view, searched for `source.ip:"84.252.113.67"` to see all the activity performed by the attacker. Then looked at what interesting fields and noticed interesting field `event.action` with `UpdateInboxRules` values. So filtered documents on that and left only with three documents. However none of the field that is parsed contained name of the rule created, it was burried in the `event.original` field, so we took full json of all three docuemnts and aked LLM to provide answer. Attacker created two distinc rules:
+In the `All logs` Data view, searched for `source.ip:"84.252.113.67"` to see all the activity performed by the attacker. Then looked at what interesting fields and noticed interesting field `event.action` with `UpdateInboxRules` values. So filtered documents on that and left only with three documents. However none of the field that is parsed contained name of the rule created, it was buried in the `event.original` field, so we took full json of all three documents and asked LLM to provide answer. Attacker created two distinct rules:
 
-1. `Forward mail` that he also updated later , so two two logs for one unique rule.
+1. `Forward mail` that he also updated later, so two logs for one unique rule.
 2. `Po tom, čo správa bola prijatá so 'invoice' nájdenými v predmete správy presunúť do Archív` which was second unique rule.
 
 > Flag: `2`
@@ -329,19 +329,19 @@ Once again LLM provided straight answer.
 ## EXT35
 > To which folder is email moved to when rule is executed?
 
-Here LLM struggled a bit since the rule does not contain folder name, but a refernce, so depending on localization it could be `Archive` (not accepted as answer) or `Archív`.
+Here LLM struggled a bit since the rule does not contain folder name, but a reference, so depending on localization it could be `Archive` (not accepted as answer) or `Archív`.
 
 > Flag: `Archív`
 
 ## EXT36
 > When was the email that was moved to archive accessed by the attacker? Use ISO8601 format e.g.: `2026-01-17T22:49:53`.
 
-This was a bit tricky to answer. LLM suggested we search for `o365.audit.Item.Subject:*invoice*`  but we found only single document of email beeing `Send` - there is no record of "receiving" such email. We also checked there is no `email received` event in the logs, just `Create`, `Send` and `Update`.
+This was a bit tricky to answer. LLM suggested we search for `o365.audit.Item.Subject:*invoice*` but we found only single document of email being `Send` - there is no record of "receiving" such email. We also checked there is no `email received` event in the logs, just `Create`, `Send` and `Update`.
 And if you filter `o365.audit.Item.InternetMessageId:<DB9PR08MB6794C5BD876B46BF8F7783C8EB8DA@DB9PR08MB6794.eurprd08.prod.outlook.com>` there are two documents, one `Create` event and one `Send` events.
 
 ![](img/EXT/20260203210402.png)
 
-After digging arround for several hours, we found something interesting, document with `event.action: MailItemsAccessed` just after the `Send` event that shows that email was accessed from Mexico and moved to `Archive` folder:
+After digging around for several hours, we found something interesting, document with `event.action: MailItemsAccessed` just after the `Send` event that shows that email was accessed from Mexico and moved to `Archive` folder:
 
 ![](img/EXT/20260203210750.png)
 
@@ -368,5 +368,36 @@ This was the timestamp we were looking for.
 
 ## EXT37
 > What subject did the attacker use to bypass this rule and send fake email with similar subject?
+
+For this task, we could not find any email with suspicious value in `o365.audit.Item.Subject` field. So we tried digging into documents with `event.action:"MailItemsAccessed"` and focused on emails where user was `david.jalovec@coolbank.eu` and country `Mexico`, as we know attacker was using David's account and was connecting from Mexico. There were total 16 documents found and when reviewing them one by one, we noticed following document:
+
+![](img/EXT/20260204104303.png)
+
+When looking at field `o365.audit.ExchangeAggregatedFolders` we see following interesting info:
+
+```
+"ExchangeAggregatedFolders": [
+          {
+            "Path": "\\Inbox",
+            "Id": "LgAAAABlyc9b0wBNQY2fqkjuL3nBAQAvBn5inKTHT6a4TXmDkEPDAAAAAAEMAAAB",
+            "FolderItems": [
+              {
+                "ImmutableId": "LgAAAAAdhAMRqmYRzZvIAKoAL8RaDQAvBn5inKTHT6a4TXmDkEPDAAABpPlLAAAJ",
+                "InternetMessageId": "<DM6PR14MB287520EE5F8822C95EC1F09EFA8DA@DM6PR14MB2875.namprd14.prod.outlook.com>",
+                "CreationTime": "2026-01-16T00:40:12",
+                "SizeInBytes": 88082,
+                "Id": "RgAAAABlyc9b0wBNQY2fqkjuL3nBBwAvBn5inKTHT6a4TXmDkEPDAAAAAAEMAAAvBn5inKTHT6a4TXmDkEPDAAABo9JKAAAJ",
+                "Subject": "Faktura"
+              }
+            ]
+          }
+        ],
+        "UserId": "david.jalovec@coolbank.eu",
+        "CreationTime": "2026-01-16T00:40:12",
+        "UserType": "0"
+      }
+```
+
+So the attacker used `Faktura` as email subject to bypass the rule. The reason why we could not find this email with subject is because email coming from external sources are not logged - only created, sent and accessed emails appear in the log. This is probably limitation of the O365 environment and organizers had to explicitly open this email for task to be solvable.
 
 > Flag: `Faktura`
