@@ -139,25 +139,41 @@ Again from the Google search.
 ## HR18
 > If the user decides to clicks Yes, persistent cookie is created. What is the name of the cookie?
 
+Again from the Google search.
+
 > Flag: `ESTSAUTHPERSISTENT`
 
 ## HR19
 > Keep this info in mind, you will need it bit later. Let's get back to the incident. After login, Lea or attacker checked Outlook web and read some emails. Based on emails available in the Inbox folder, who was trying to reach Lea in Microsoft Teams?
+
+By correlating logs with client.address belonging to 37.50.238.15 and looking at the emails in the inbox, we can see that Zdenka Jakubcek was trying to reach Lea in Microsoft Teams.
+
+![](img/HR/HR19.png)
 
 > Flag: `Zdenka Jakubcek`
 
 ## HR20
 > What is the Internet Message ID of the email with subject "Doplnenie k dohode"? Format: without <> brackets.
 
+Log message for the email with mentioned subject and we look at InternetMessageId field in the event.original, we find the ID.
+![](img/HR/HR20.png)
+
 > Flag: `AM6PR08MB38130D42D944F762F2085A83F18CA@AM6PR08MB3813.eurprd08.prod.outlook.com`
 
 ## HR21
 > You probably noticed that you need to jump between o365 and azure logs if you want to see the complete picture what happened. Some event are shown different in both of them, some are even missing. It is also the case here. There was an attempt to access other web application few minutes later, but was not successful. What is the error / status code of this attempt?
 
+Filtering for same client.address and event.action USerLoginFailed, we can see the error code is `50072`.
+![](img/HR/HR21.png)
+
 > Flag: `50072`
 
 ## HR22
 > Based on Microsoft error codes reference, what is the logon error name (or description)? Format: VeryLongWordAlmostGermanStyle
+
+Same log message as in HR21, see highlighted error code below. 
+
+![](img/HR/HR22.png)
 
 > Flag: `UserStrongAuthEnrollmentRequiredInterrupt`
 
