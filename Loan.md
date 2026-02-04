@@ -65,25 +65,55 @@ We searched for information and found answer on this page: https://tomcat.apache
 ## Loan09
 > What is the name of the Apache Tomcat feature where the vulnerability exists? It is also unofficial name of this vulnerability used by security vendors.
 
+This one was bit more difficult as original question stated "What is the name of the feature that needs to be enabled on Apache Tomcat for exploit to work?" We reviewed the documentation around this vulnerability, mainly from https://tomcat.apache.org/security-11.html, where it clearly stated:
+```
+If all of the following were true, a malicious user was able to perform remote code execution:
+
+  - writes enabled for the default servlet (disabled by default)
+  - support for partial PUT (enabled by default)
+  - application was using Tomcat's file based session persistence with the default storage location
+  - application included a library that may be leveraged in a deserialization attack
+```
+
+Our understanding was that by default partial put is enabled and by default writes are not enabled for the default servlet, so we tried to submit flag with various combination of `default servlet`, `writes enabled for the default servlet` etc. Only after consulting with organizers, when they reformulated question and referenced that it is also unofficial name of this vulnerability, it led us to article by Unit42: https://unit42.paloaltonetworks.com/apache-cve-2025-24813-cve-2025-27636-cve-2025-29891/ 
+
 > Flag: `partial PUT`
 
 ## Loan10
 > Partial PUT typically uses which header in an HTTP request to specify which part of the resource should be modified?
+
+Unit42 blog describes in detail how to exploit and mentions that this header is improperly handled.
 
 > Flag: `Content-Range`
 
 ## Loan11
 > Were those RCE attempts successful? I am sure you know the answer, even before digging in more logs. A few minutes after the last of those 3 requests, an alert in company SIEM related to the loan machine was triggered. What is the name of the alert?
 
+In the Alerts dashboard, we noticed two `Shell Script` alerts around time after successful RCE on `loan` server that has IP of `192.168.11.49`.
+
+![](img/Loan/20260204211117.png)
+
 > Flag: `Shell Script`
 
 ## Loan12
 > Between which two public IP addresses did the communication take place in the given alert? (format source,destination)
 
+Looking at the alert details, we see `client.nat.ip` and `destination.address`
+
+![](img/Loan/20260204212403.png)
+
 > Flag: `80.242.40.20,192.30.253.137`
 
 ## Loan13
 > Under what name was the first downloaded file saved to disk? Full path
+
+From the alert details we also see information `event with file name memory_test.sh`.
+
+![](img/Loan/20260204212629.png)
+
+So we went to hunt for `*memory_test.sh*` in the Discovery dashboard and found document in the `auditbeat-*` data view and when looking into fields like  `process.args` we got our answer.
+
+![](img/Loan/20260204213153.png)
 
 > Flag: `/tmp/r`
 
