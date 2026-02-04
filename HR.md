@@ -180,20 +180,35 @@ Same log message as in HR21, see highlighted error code below.
 ## HR23
 > As you probably read yourself, it means that user needs to enroll for second factor authentication to access this application. Seems that our user was lazy to do this, as logs don't show any successful login. What was the web application with request to enroll 2fa?
 
+Searching for the application id in the log message, and then correlating it with the documentation of Microsoft applications, we find out that the application is `Azure Portal`.
+
+![](img/HR/HR23.png)
+
 > Flag: `Azure Portal`
 
 ## HR24
 > If except o365 and azure logs you also are looking to SIEM alerts section, you could notice several alerts for events related to Lea Ciger. Consent was granted to third party application to access Lea's account. What is the name of the application?
+
+Filtering for event action Consent To Application and viewing the log.
+
+![](img/HR/HR24.png)
 
 > Flag: `eM client`
 
 ## HR25
 > What is the full name of the OS on which eM Client is running?
 
+Filtering for eM client related logs and viewing the os.full field. See screenshot below.
+
+![](img/HR/HR25.png)
+
+
 > Flag: `Android 10`
 
 ## HR26
 > What is the first country from which eM Client connected to Lea's account?
+
+Same log message as in HR25, see geoip.country_name field.
 
 > Flag: `Costa Rica`
 
@@ -204,60 +219,85 @@ Same log message as in HR21, see highlighted error code below.
 
 > How many compromised Coolbank employees did you find?
 
+Searching for coolbank.eu domain on https://www.hudsonrock[.]com/search/domain/coolbank.eu we found 1.
+
+
 > Flag: `1`
 
 ## HR28
 > There is some more info available using Hudson rock free tools, but we will show you what is inside. Check the attached archive with screenshots from the paid platform and original stealer log. What is the name of the stealer log with Lea's credentials?
 > [1._domain_search.jpeg](img/HR/01._domain_search.jpeg) [02._stealer.jpeg](img/HR/02._stealer.jpeg) [03._AI_analyzer.jpeg](img/HR/03._AI_analyzer.jpeg) [hudsonrock.zip](img/HR/hudsonrock.zip)
 
+From 02._stealer.jpeg we can see the name of the log file is `SK_@FATETRAFFIC_2026_01_12_123456-20260112T151050Z-3-001`.
+
 > Flag: `[SK]_@FATETRAFFIC_2026_01_12_123456-20260112T151050Z-3-001`
 
 ## HR29
 > What was the Date and Time of the initial infection according to the log metadata? Format: `YYYY-MM-DD HH:mm`.
+
+From previous message the image 01._domain_search.jpeg we can see the date and time of the initial infection is `2026-01-12 01:03`.
 
 > Flag: `2026-01-12 01:03`
 
 ## HR30
 > What is the exact path from which the malware was executed on the victim's PC?
 
+From 01._domain_search.jpeg. 
+
 > Flag: `C:\Users\leuska\AppData\Local\Temp\11808150101\bDjqu09.exe`
 
 ## HR31
 > Which Stealer Family generated this log?
+
+From images from HR28.
 
 > Flag: `Vidar`
 
 ## HR32
 > The stealer captured Lea’s IP address at the time of infection. What was it?
 
+From images from HR28.
+
 > Flag: `85.216.129.231`
 
 ## HR33
 > What Antivirus software was installed on the infected computer?
+
+From images from HR28.
 
 > Flag: `Windows Defender`
 
 ## HR34
 > According to the stealer log, what is the Computer Name of Lea Ciger’s infected machine?
 
+From images from HR28.
+
 > Flag: `G2026`
 
 ## HR35
 > What was the install date of the machine?
+
+From the zip file and the file `information.txt` inside.
 
 > Flag: `28/11/2025 18:34:35`
 
 ## HR36
 > How many unique passwords are in the stealer log?
 
+Counting the unique unique passwords.
+
 > Flag: `17`
 
 ## HR37
 > What is the value of the stolen cookie which could be used by attacker to access Lea's O365 account even without password or with 2fa enabled?
 
+From file Google Chrome_Profile 1.txt viewing ESTSAUTHPERSISTENT.
+
 > Flag: `1.AU8Art4mR9Rj_kuS5GCwfz2B7yC_mZE_oQdBhdwCEUeH70gBAABPAA.AgABFwQAAACvnsHKEvvRQb3Bz3Qc7wnaAwDs_wUA9P8tltUhRSHy8kFkX118C264PtkHlHgMN2FTa5YdU7jnk9mWobZY-SqthVIm3QaytOL2ffkwxcp3Sp_my_68I9pskMXStbpK4P3IF5iVND1oOnkcllhxper4Jm5a0hwGGNiRpc7EZ82lt17DD8HUYEzoVapMoDUuLL62AaHZwNwK1EG7gpntodhl6AKGnKDyy7sSMMK95JrA9xslK2UyfNZ8g9VWIh6dbChxzjiqjxvywmP2RN2DOuopTdXuUIEnKircPhpISqLyNV1BACT9wNE8Zn_s5ygvj95LAFcxL76ySvWd-wd6fc3rG2c3pXlWm3SFEhfFiTkm5GvuyCKWiytRxHpeq89MlQIM8XW44kiJLw3bnbvJGxuj0Rxncaf8pv3nLGsgRc8ycSqm47nwPlLaHkGhQJyZQgQJBkeS2NjkHRCf12VWtGRVH4FiyPXRcGxvToqAAURXSDtX0BbtOfwTEPCMv5PPaEV2VZEBnZwV03jaXmxUt6HR1myZXUVImYFMHY-Mh-iQicWjuoNYhChRLZ7czmQ_e9yWosxZbh9NZzD5gYgoPKjIknhclRnlwa02kGrC58BqvvEQs2mMvdXCTIRw7qm01g`
 
 ## HR38
 > This is the last question of this category. What phone number is visible on the last entry in the leaked browser history?
+
+File Google Chrome_Profile 2.txt has google maps link at the end, which shows Slovenska sporitelna on the map with contact number.
 
 > Flag: `0850111888`
