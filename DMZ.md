@@ -250,11 +250,12 @@ Consulted LLM.
 > After attacker successfully logged into velociraptor host. Using velociraptor GUI he created a user that was later added to a highly privileged group. What was the full commandline of user creation?
 
 This was the most difficult and fun task, I loved it! (after solving it of course, I hated it until then!) Spent 4 hours stuck on this, reading every single document on `velociraptor` server trying to figure out what command attacker used to create `velociraptor_backup` user on that machine. We submitted dozen answers that were not accepted:
-    * `/sbin/useradd -d /home/velociraptor_backup -g velociraptor_backup -s /bin/bash -u 1003 velociraptor_backup`
-    * `/usr/bin/perl /usr/sbin/adduser velociraptor_backup`
-    * `"sh -c ""$@"" >/dev/null 2>&1 -- /usr/sbin/zsysctl userdata create velociraptor_backup /home/velociraptor_backup"`
-    * `sudo adduser velociraptor_backup`
-    * `sudo /opt/velociraptor/velociraptor --config /opt/velociraptor/velociraptor.config.yaml user add backup --role administrator`
+    
+  - `/sbin/useradd -d /home/velociraptor_backup -g velociraptor_backup -s /bin/bash -u 1003 velociraptor_backup`
+  - `/usr/bin/perl /usr/sbin/adduser velociraptor_backup`
+  - `"sh -c ""$@"" >/dev/null 2>&1 -- /usr/sbin/zsysctl userdata create velociraptor_backup /home/velociraptor_backup"`
+  - `sudo adduser velociraptor_backup`
+  - `sudo /opt/velociraptor/velociraptor --config /opt/velociraptor/velociraptor.config.yaml user add backup --role administrator`
 
 With team we discussed and word `later` was one bothering us.. all the commands executed on `velociraptor` server added the user immediately into the group.. then later, while going though [Velociraptor documentation](https://github.com/strandjs/IntroLabs/blob/master/IntroClassFiles/Tools/IntroClass/Velociraptor/Velociraptor.md) we had an epiphany - what if attacker did not use GUI to create user on `velociraptor` server, but on some other machine, since it had full admin rights via the agent running in the Coolbank evenironmnet? Thought immediately followed - if I would be attacker, where would I create user that later would be added to `a highly privileged group` - Windows Domain Controller of course! And the rest was walk in the park! Beautiful... kudos to one who developed this task!
 
