@@ -3,46 +3,67 @@
 ## Loan01
 > When digging deeper in the available evidence after the incident, we detected unusual web requests on the "loan" server. From which IP address did these requests originate?
 
+In `filebeat-*` data view, we were searching for `host.hostname: "loan"` and added filter `http.request.method:exists` and saw suspicious `PUT` request and after filtering them, we got the originating IP:
+
+![](img/Loan/20260204202944.png)
+
 > Flag: `176.9.15.89`
 
 ## Loan02
 > Which country does that IP address come from?
+
+Checking https://www.abuseipdb.com/check/176.9.15.89, we find to which country IP belongs to.
 
 > Flag: `Germany`
 
 ## Loan03
 > Which organization does this IP address belong to?
 
+Checking https://ipinfo.io/176.9.15.89, we find to which organization this IP belongs to.
+
+![](img/Loan/20260204202724.png)
+
 > Flag: `Hetzner Online GmbH`
 
 ## Loan04
 > A scanning attack was performed on the loan server. Which application server (Java web server) is running on the loan host?
 
+From the logs we obtained in [Loan01](#loan01) we see field `log.file.path` containing value `/var/log/tomcat11..` telling is which application server is running.
+
 > Flag: `tomcat11`
 
 ## Loan05
 > After the requests indicating a scan, we recorded several requests suggesting that content was being stored on the server. How many such requests were created?
- 
+
+From the logs we obtained in [Loan01](#loan01) we saw only three PUT requests.
+
 > Flag: `3`
 
 ## Loan06
 > What URL path does the first of these requests have?
- 
+
+Visible in in [Loan01](#loan01) task.
+
 > Flag: `/zYfIgNzVzK.session`
 
 ## Loan07
-> Right after PUT request, there is GET request, repeated three times. Seems like attemps to exploit some vulnerability. Based on already collected evidence, what could be the CVE of this vulnerability? (format CVE-XXXX-XXXXX)
+> Right after PUT request, there is GET request, repeated three times. Seems like attempts to exploit some vulnerability. Based on already collected evidence, what could be the CVE of this vulnerability? (format CVE-XXXX-XXXXX)
+
+We searched online for tomcat CVEs related to PUT request and found following https://www.cve.org/CVERecord?id=CVE-2025-24813
 
 > Flag: `CVE-2025-24813`
 
 ## Loan08
 > Nice, remote code execution... When was this vulnerability reported to the Tomcat security team? Format: `YYYY-MM-DD`.
 
+We searched for information and found answer on this page: https://tomcat.apache.org/security-11.html
+
+![](img/Loan/20260204203908.png)
+
 > Flag: `2025-01-13`
 
 ## Loan09
 > What is the name of the Apache Tomcat feature where the vulnerability exists? It is also unofficial name of this vulnerability used by security vendors.
-
 
 > Flag: `partial PUT`
 
@@ -53,7 +74,6 @@
 
 ## Loan11
 > Were those RCE attempts successful? I am sure you know the answer, even before digging in more logs. A few minutes after the last of those 3 requests, an alert in company SIEM related to the loan machine was triggered. What is the name of the alert?
-
 
 > Flag: `Shell Script`
 
@@ -77,7 +97,6 @@ To answer this question, we must look at the network traffic in provided pcap fi
 New window will open where we will see full HTTP session communication between source `192.168.11.49` and destination `192.30.253.137` when attacker downloaded `memory_test.sh` where we see our answer:
 
 ![](img/Loan/20260130143612.png)
-
 
 > Flag: `Wget/1.21.4`
 
@@ -111,13 +130,12 @@ To the previous search, we add `process.parent.id` field to the table.
 
 For this we search in Kibana `process.pid:"15423"` and see that it is `java`.
 
-
 > Flag: `java`
 
 ## Loan19
 > The process which executed the file behaves suspiciously and we observed unusual communication. Which IP and port is the file communicating with? (format ip:port)
 
-From the screeshot in task [Loan18](#loan18) we see that the process `/tmp/r` started network connection with destination IP `195.20.9.183` on port `8443`.
+From the screenshot in task [Loan18](#loan18) we see that the process `/tmp/r` started network connection with destination IP `195.20.9.183` on port `8443`.
 
 > Flag: `195.20.9.183:8443`
 
@@ -250,7 +268,7 @@ We see that later in the reverse shell TCP Stream:
 ## Loan33
 > Where exactly did the attacker copy the file they were writing into?
 
-Analyzing futher the reverse shell TCP Stream, we see that attacker configured rclone endpoint and uploaded files to:
+Analyzing further the reverse shell TCP Stream, we see that attacker configured rclone endpoint and uploaded files to:
 
 ![](img/Loan/20260130175418.png)
 
@@ -298,7 +316,7 @@ Run JohntheRipper on the ssh.hash with
 ```
 ./john --wordlist=rockyou.txt ssh.hash 
 ```
-For curiosisty this is the hash that JohntheRipper needs to crack the password not the PEM format, or other standard formats that ssh-keygen outputs (truncated, but the header is important, because this is the insruction to john what algo it needs to use for cracking, the rest is the hash value of the key i guess)
+For curiosity this is the hash that JohntheRipper needs to crack the password not the PEM format, or other standard formats that ssh-keygen outputs (truncated, but the header is important, because this is the instruction to john what algo it needs to use for cracking, the rest is the hash value of the key i guess)
 ```
 id_ed25519:$sshng$6$16$fbdc75dfb05e6f693397fadb0aa84cd4$274$6f70656e7373682d6b65792d76310000................
 ```
@@ -331,4 +349,3 @@ An advanced, yet simple, tunneling tool that uses TUN interfaces.
 ```
 
 > Flag: `TUN interface`
-
