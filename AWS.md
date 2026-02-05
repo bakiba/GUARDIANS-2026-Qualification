@@ -98,7 +98,7 @@ From previous task look at the `cloud.region` field:
 
  In `aws-*` search for `event.action: RunInstances`, there is single event, check the `actor.entity.id` field.
 
- ![](img/AWS/20260128150326.png)
+ ![](img/AWS/20260205143003.png)
 
 > Flag: `arn:aws:iam::214900426653:user/loan-apiuser`
 
