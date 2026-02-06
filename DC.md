@@ -264,9 +264,9 @@ After we searched for `process.pid:"404" and agent.hostname:"ADC1ofc"` we found 
 ## DC31
 > Which OutFile value was used in the Invoke-WebRequest command on host adc2ofc, under the parent process Velociraptor.exe ?
 
-For this task, we searched for `agent.hostname:"ADC2ofc"  and  process.parent.name:"Velociraptor.exe"` and investigated series of PowerShell commands with encoded payload:
+For this task, we searched for `agent.hostname:"ADC1ofc"  and  process.parent.name:"Velociraptor.exe"` and investigated series of PowerShell commands with encoded payload:
 
-![](img/DC/20260131213450.png)
+![](img/DC/20260206161156.png)
 
 One of the commands contained payload we were interested in:
 

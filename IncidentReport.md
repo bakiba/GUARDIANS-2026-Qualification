@@ -19,10 +19,25 @@
   - `2026-01-15T17:02:02.000Z` - [AWS] loan-apiuser started EC2 instance i-06f9c69d1c1cb1ece with public IP 16.170.218.1.
   - `2026-01-15T17:12:55.542Z` - [AWS] CryptoCurrency:EC2/BitcoinTool.B - The EC2 instance i-06f9c69d1c1cb1ece is communicating outbound with a known Bitcoin-related IP address 141.95.72.61.
   - `2026-01-15T17:15:47.907Z` - [Loan] attacker installed pivoting and tunneling tool ligolo-ng.
-  - `2026-01-15T17:16:13.984Z` - [Loan] attacker started network discovery by running port scan across the DMZ network.
+  - `2026-01-15T17:16:13.984Z` - [Loan] attacker started network discovery by running port scan across the DMZ network from the `loan` server.
+  - `2026-01-15T17:23:38.000Z` - [DMZ] attacker accessed `dmzFTP` using stolen ssh private key from `spravca`.
+  - `2026-01-15T17:28:40.743Z` - [DMZ] attacker installed `teamviewer` on `dmzFTP` server.
+  - `2026-01-15T17:29:48.348Z` - [DMZ] attacker created user `admfile` on `dmzFTP` server.
+  - `2026-01-15T17:45:12.020Z` - [DMZ] attacker created crontab task to establish persistence.
+  - `2026-01-15T18:54:38.000Z` - [DMZ] attacker performed latteral movement and accessed `velociraptor` server using stolen ssh private key from user `spravca`.
+  - `2026-01-15T19:12:57.376Z` - [DC] attacker created user `administratr` on ADC1ofc using Velociraptor and placed it into `Domain Admins` group.
+  - `2026-01-15T19:15:42.622Z` - [DC] attacker downloads AnyDesk.exe into  C:\Users\Public\ on ADC2ofc using Velociraptor.
+  - `2026-01-15T19:20:38.416Z` - [DC] attacker installs AnyDesk.exe, configures to start silently with Windows and sets password.
+  - `2026-01-15T19:26:16.422Z` - [DC] attacker created a disk snapshot using Volume Shadow Copies, exposed it locally via a filesystem link, and extracted important system files `NTDS.dit`and `SYSTEM` into a temporary folder.
+  - `2026-01-15T19:31:31.956Z` - [DC] attacker deleted shadow copies on ADC2ofc to disable system recovery.
+  - `2026-01-15T19:32:02.932Z` - [DC] attacker created user `dominik.chrappe` in Windows AD and added him to `Group Policy Creator Owners` group.
+
   - `2026-01-15T20:13:13.971Z` - [HR] event with source 36.50.238.15 by lea.ciger@coolbank.eu created high alert Entra ID Protection - Risk Detection - Sign-in Risk. Lea logged in to Outlook Web from IP address located in 36.50.238.15/Singapore, owned by VPN provider while usually she logs in from 37.58.4.198. Further investigation showed that she logged from Chrome, while she usually used Edge and logged from IP. Her account was using single factor for authentication.
+  - `2026-01-15T20:15:01.543Z` - [DMZ] attacker tried to exfiltrate data from dmzFTP server from /etc /home /var/www /root directories, but that appears to fail.
   - `2026-01-15T20:23:44.000Z` - [HR] attacker tried to access Azure Portal but it failed due to requirement to enroll for second factor authentication.
   - `2026-01-15T20:31:18.204Z` - [HR] attacker granted consent to 3rd party client (eM Client) to access Lea's account.
+  
+  - `2026-01-15T20:52:45.599Z` - [DC] attacker started Akira ranwomware on ADC2ofc.
   - `2026-01-15T21:18:33.000Z` - [AWS] An administrator terminated the suspicious EC2 instance i-06f9c69d1c1cb1ece.
   - `2026-01-15T22:12:56.965Z` - [EXT] attacker installs NodeJS server on officewin5/192.168.12.8 that listens on port `3000` and collects keylogger data.
   - `2026-01-15T22:25:58.300Z` - [EXT] user `david.jalovec` downloads malicious browser extension `extension.zip` that is masked keylogger.
@@ -53,13 +68,25 @@
   - applications/1ef41cd1-d150-45fc-bf3d-fc41abd0c22b.json [430b]
   - applications/2648684d-7288-47bc-96fd-6d1348860cb3.json [435b]
   - id_ed25519 (SSH private key)
+  - NTDS.dit,SYSTEM from ADC2ofc
 
 ### Hosts impacted
 - List of hosts compromised:
   - officewin5/192.168.12.8
   - loan/192.168.11.49
+  - ADC1ofc/192.168.11.98
+  - ADC2ofc/192.168.12.99
+  - dmzFTP/192.168.11.26
+  - velociraptor/192.168.11.7
+  
 
 - List of hosts impacted by ransomware:
+  - ADC2ofc/192.168.12.99
+    - C:\Users\Public\
+    - C:\Users\Default\
+    - C:\Users\administratr\
+    - C:\Temp\EXCH\
+    - C:\Temp\
 
 ## Lessons learned
 
@@ -90,7 +117,17 @@
 | Server| SimpleHTTP/0.6 Python/3.13.11 | Server that hosted attackers reverse shell binary |
 | file  | cpu_test.sh |  Local Privilege Escalation to Root via Sudo exploiting CVE-2025-32463 |
 | URL   | https://github.com/nicocha30/ligolo-ng/releases/download/v0.8.2/ligolo-ng_agent_0.8.2_linux_amd64.tar.gz | Pivoting and tunneling tool used by many pentesters |
-| 
+| Malware | teafortwo.exe | ransomware.akira/filecryptor |
+| MD5     | ae454079c93a7a1ce276756b9d62d196 | teafortwo.exe ransomware.akira/filecryptor |
+| Malware | backupTool.exe | Havoc C2 framework used to establish persistence |
+| SHA256  | c9a38fa7b619a1bc814fcf381a940245dfa8d24ae51e7ec22f9461eae288ede3 |  backupTool.exe Havoc C2 framework used to establish persistence |
+| User    | administratr | User created by attacker to keep persistent access to compromised environment |
+| IP      | 176.9.13.248 | Havoc C2 infrastructure |
+| User    | dominik.chrappe | User created by attacker to keep persistent access to compromised environment |
+| User    | admfile         | local user on dmzFTP server created by attacker |
+| IP      | 200.98.8.82     | IP address where the crontab job from dmzFTP was regularly connecting |
+| file    | healthcheck     | 
+
 
 
 
