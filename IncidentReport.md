@@ -5,16 +5,22 @@
 ## Incident timeline
 
   - `2026-01-12T01:03:45.000Z` - [HR] Initial infection of Lea's personal computer G2026/Windows 11, from where Vidal Stealer stole 17 unique password and persistent cookie ESTSAUTHPERSISTENT that could be used to attacker to access Lea's O365 account.
-  - `2026-01-15T16:51:03.000Z` - [AWS] attacker logged to AWS from IP 138.199.21.200 using stolen accesskey AKIATECIQI6O6Y3CBDOH for loan-apiuser.
-  - `2026-01-15T16:52:18.000Z` - [AWS] attacker created AWS user aws-testing with access key AKIATECIQI6O6U5P3WUZ and attached access policy arn:aws:iam::aws:policy/AdministratorAccess.
+  - `2026-01-15T16:40:13.887Z` - [Loan] attacker exploited tomcat11 RCE (CVE-2025-24813/Partial PUT) and downloaded payload `memory_test.sh` what contained remote shell.
+  - `2026-01-15T16:40:53.983Z` - [Loan] attacker started reverse shell to `192.30.253.137:8443`.
+  - `2026-01-15T16:43:13.984Z` - [Loan] attacker escalated privileges by exploiting CVE-2025-32463 Local Privilege Escalation to Root via Sudo chroot in Linux.
+  - `2026-01-15T16:44:03.983Z` - [Loan] attacker obtained AWS access key for loan-apiuser from source code in Coolbank java application `/home/developer/projects/loan-app/src/main/java/eu/coolbank/loan/LoanApplicationServlet.java`.
+  - `2026-01-15T16:48:04.909Z` - [Loan] attacker exfiltrated collected AWS access key to Mega cloud storage provider `g.api.mega.co.nz`.
+  - `2026-01-15T16:49:11.907Z` - [Loan] attacker exfiltrated SSH private key from user `spravca` on Loan server a Mega.
+  - `2026-01-15T16:51:03.000Z` - [AWS] attacker logged to AWS from IP `138.199.21.200` using stolen access key `AKIATECIQI6O6Y3CBDOH` for `loan-apiuser`.
+  - `2026-01-15T16:52:18.000Z` - [AWS] attacker created AWS user `aws-testing` with access key `AKIATECIQI6O6U5P3WUZ` and attached access policy `arn:aws:iam::aws:policy/AdministratorAccess`.
   - `2026-01-15T16:56:44.000Z` - [AWS] attacker listed objects in `loan-applicants` S3 bucket.
   - `2026-01-15T16:58:14.000Z` - [AWS] attacker downloaded 7 objects from `loan-applicants` S3 bucket (see [list of exfiltrated documets](#sensitive-documents-exfiltrated)).
-  - `2026-01-15T17:00:29.000Z` - [AWS] loan-apiuser created ssh key pair (testing_web_key/b4:f4:2a:90:b8:f8:fd:e4:0f:32:66:4a:bd:0c:00:63:ae:31:8b:bb).
+  - `2026-01-15T17:00:29.000Z` - [AWS] loan-apiuser created ssh key pair (`testing_web_key/b4:f4:2a:90:b8:f8:fd:e4:0f:32:66:4a:bd:0c:00:63:ae:31:8b:bb`).
   - `2026-01-15T17:02:02.000Z` - [AWS] loan-apiuser started EC2 instance i-06f9c69d1c1cb1ece with public IP 16.170.218.1.
   - `2026-01-15T17:12:55.542Z` - [AWS] CryptoCurrency:EC2/BitcoinTool.B - The EC2 instance i-06f9c69d1c1cb1ece is communicating outbound with a known Bitcoin-related IP address 141.95.72.61.
-  
+  - `2026-01-15T17:15:47.907Z` - [Loan] attacker installed pivoting and tunneling tool ligolo-ng.
+  - `2026-01-15T17:16:13.984Z` - [Loan] attacker started network discovery by running port scan across the DMZ network.
   - `2026-01-15T20:13:13.971Z` - [HR] event with source 36.50.238.15 by lea.ciger@coolbank.eu created high alert Entra ID Protection - Risk Detection - Sign-in Risk. Lea logged in to Outlook Web from IP address located in 36.50.238.15/Singapore, owned by VPN provider while usually she logs in from 37.58.4.198. Further investigation showed that she logged from Chrome, while she usually used Edge and logged from IP. Her account was using single factor for authentication.
- 
   - `2026-01-15T20:23:44.000Z` - [HR] attacker tried to access Azure Portal but it failed due to requirement to enroll for second factor authentication.
   - `2026-01-15T20:31:18.204Z` - [HR] attacker granted consent to 3rd party client (eM Client) to access Lea's account.
   - `2026-01-15T21:18:33.000Z` - [AWS] An administrator terminated the suspicious EC2 instance i-06f9c69d1c1cb1ece.
@@ -35,6 +41,7 @@
   - Lea Ciger (lea.ciger@coolbank.eu) - compromised O365 credentials.
   - David Jalovec (david.jalovec@coolbank.eu) - stolen O365 credentials via keylogger.
   - Miloslav Dubnicka (miloslav.dubnicka@coolbank.eu) - 
+  - spravca - SSH private key `id_ed25519` and passphrase stolen from local user on loan server.
 
 ### Sensitive documents exfiltrated
 
@@ -45,6 +52,7 @@
   - applications/6028eeec-d4d2-4002-9c04-63c252137e58.json [427b]
   - applications/1ef41cd1-d150-45fc-bf3d-fc41abd0c22b.json [430b]
   - applications/2648684d-7288-47bc-96fd-6d1348860cb3.json [435b]
+  - id_ed25519 (SSH private key)
 
 ### Hosts impacted
 - List of hosts compromised:
@@ -57,6 +65,8 @@
 
 - **Gap Analysis**: 
 - **Recommendations for Improvement**: 
+  - storage of private key in user home directory
+  - week private key passphrase
 
 ## Indicators of Compromise (IoCs)
 
@@ -65,6 +75,7 @@
 | Malware | C:\Users\leuska\AppData\Local\Temp\11808150101\bDjqu09.exe | Vidar Sealer |
 | IP      | 138.199.21.200  | attacker loged to AWS using stolen loan-apiuser accesskey |
 | User    | aws-testing     | attacker created AWS user |
+| sshkey  | b4:f4:2a:90:b8:f8:fd:e4:0f:32:66:4a:bd:0c:00:63:ae:31:8b:bb | key fingerprint of aws-testing user |
 | AWS KEY | AKIATECIQI6O6U5P3WUZ | AWS access key for aws-testing user |
 | AWS KEY | AKIATECIQI6O6U5P3WUZ | compromized AWS access key used by legitimate loan-apiuser |
 | SHA1    | 0b7fc40a15b5f471261dd76a16c6acd20e055373 | sha1 hash of the malicious browser extension |
@@ -73,6 +84,15 @@
 | IP      | 84.252.113.67   | attacker logged to O365 using stolen credentials from David Jalovec |
 | UserAgent| eMClient/10.4.4209.0 | UserAgent used by attacker duing logon |
 | IP     | 176.9.15.89      | IP address from which the tomcat11 RCE (CVE-2025-24813) was exploited |
+| file   | memory_test.sh   | remote shell |
+| IP     | 192.30.253.137   | IP where attacker connected remote shell from loan |
+| file   | memory_test.sh   | remote shell |
+| Server| SimpleHTTP/0.6 Python/3.13.11 | Server that hosted attackers reverse shell binary |
+| file  | cpu_test.sh |  Local Privilege Escalation to Root via Sudo exploiting CVE-2025-32463 |
+| URL   | https://github.com/nicocha30/ligolo-ng/releases/download/v0.8.2/ligolo-ng_agent_0.8.2_linux_amd64.tar.gz | Pivoting and tunneling tool used by many pentesters |
+| 
+
+
 
 ## Asset list
 - officewin1/192.168.12.4/david.jalovec
